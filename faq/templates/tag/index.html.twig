@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tag's moderation page{% endblock %}
+
+{% block body %}
+    <h1 class="blue-grey-text text-darken-2 text-center">Tag's moderation page</h1>
+
+    <a class="waves-effect waves-light btn-large" href="{{ path('tag_new') }}"><i class="material-icons left">add_circle</i>New Tag</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tag in tags %}
+            <tr>
+                <td>{{ tag.name }}</td>
+                <td>
+                    <a href="{{ path('tag_show', {'id': tag.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="show">search</i></a>
+                    <a href="{{ path('tag_edit', {'id': tag.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="edit">edit</i></a>
+                    <a href="{{ path('tag_remove', {'id': tag.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="delete">delete_forever</i></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

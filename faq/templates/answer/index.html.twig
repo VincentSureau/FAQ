@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Answer moderation page{% endblock %}
+
+{% block body %}
+    <h1 class="blue-grey-text text-darken-2 text-center">Answers' moderation page</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Author</th>
+                <th>Content</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for answer in answers %}
+            <tr>
+                <td><a href="{{ path('question_show', {'id' : answer.question.id }) }}">Question #{{answer.question.id}}</a></td>
+                <td><a href="{{ path('user_show', {'id' : answer.user.id }) }}">{{answer.user.username}}</a></td>
+                <td>{{ answer.content }}</td>
+                <td>{{ answer.status }}</td>
+                <td>{{ answer.createdAt ? answer.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('answer_show', {'id': answer.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="show">search</i></a>
+                    <a href="{{ path('answer_edit', {'id': answer.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="edit">edit</i></a>
+                    <a href="{{ path('answer_moderate', {'id': answer.id}) }}">{{ (answer.status == 'active') ? '<i class="material-icons tooltipped" data-position="right" data-tooltip="disable">report</i>' : '<i class="material-icons tooltipped" data-position="right" data-tooltip="enable">report_off</i>' }}</a>
+                    <a href="{{ path('answer_remove', {'id': answer.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="delete">delete_forever</i></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

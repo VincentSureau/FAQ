@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users moderation page{% endblock %}
+
+{% block body %}
+    <h1 class="blue-grey-text text-darken-2 text-center">Users' moderation page</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Avatar</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role.name }}</td>
+                <td>{{ user.email }}</td>
+                <td><img class="materialboxed" width="50" src="{{ user.pictureUrl }}"></td>
+                <td>{{ user.status }}</td>
+                <td>
+                    <a href="{{ path('user_show', {'id': user.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="show">search</i></a>
+                    {% if user.role.code == 'ROLE_USER'%}
+                    <a href="{{ path('user_edit', {'id': user.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="edit">edit</i></a>
+                    <a href="{{ path('user_moderator', {'id': user.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="give moderator role">supervisor_account</i></a>
+                    <a href="{{ path('user_moderatepicture', {'id': user.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="remove picture">portrait</i></a>
+                    <a href="{{ path('user_moderate', {'id': user.id}) }}">{{ (user.status == 'active') ? '<i class="material-icons tooltipped" data-position="right" data-tooltip="disable">report</i>' : '<i class="material-icons tooltipped" data-position="right" data-tooltip="enable">report_off</i>' }}</a>
+                    <a href="{{ path('user_remove', {'id': user.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="delete">delete_forever</i></a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Question's page{% endblock %}
+
+{% block body %}
+
+<h4 class="blue-grey-text text-darken-2">Question :</h4>
+
+
+{# question template #}
+
+  <div class="col s12 m7">
+    <div class="card horizontal">
+      <div class="card-stacked">
+        <div class="card-content light-blue lighten-5" style="padding: 0.5em">
+            {% for tag in question.tags %}
+                <a href="{{ path('tag_show', {'id' : tag.id })}}"><span class="badge blue white-text">{{ tag.name }}</span></a>
+            {% endfor %}
+        </div>
+        <div class="card-content" style="padding:0">
+            <ul class="collection" style="margin:0; border:none">
+                <li class="collection-item avatar light-blue lighten-5">
+                    <img src="{{ question.user.pictureUrl }}" alt="" class="circle">
+                    <span class="title"><h4 style="margin: 0">{{ question.content }}</h4></span>
+                </li>
+            </ul>
+        </div>
+        <div class="card-action  light-blue lighten-4">
+            le {{question.createdAt|date("j F Y", "Europe/Paris")}} par <a href="{{ path('user_show', {'id': question.user.id}) }}">{{question.user.username}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<h4 class="blue-grey-text text-darken-2">Réponses :</h4>
+
+
+{# best answer template #}
+
+{% if question.bestAnswer and (question.bestAnswer.status == 'active') %}
+  <div class="col s12 m7">
+    <div class="card horizontal">
+      <div class="card-stacked">
+        <div class="card-content" style="padding: 0.5em">
+            
+                <span class="secondary-content"><i class="material-icons tooltipped" data-position="top" data-tooltip="Voter pour cette question">thumb_up</i></span>
+                <span class="secondary-content"><i class="material-icons tooltipped" data-position="top" data-tooltip="Réponse validée par le demandeur">assignment_turned_in</i></span>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and (app.user.role.code in ['ROLE_MODERATEUR', 'ROLE_ADMIN'])  %}
+                    <span class="secondary-content left"><a href="{{ path('answer_edit', {'id': question.bestAnswer.id}) }}"><i class="material-icons tooltipped" data-position="top" data-tooltip="edit">edit</i></a></span>
+                    <span class="secondary-content left"><a href="{{ path('answer_moderate', {'id': question.bestAnswer.id}) }}">{{ (question.bestAnswer.status == 'active') ? '<i class="material-icons tooltipped" data-position="top" data-tooltip="disable">report</i>' : '<i class="material-icons tooltipped" data-position="top" data-tooltip="enable">report_off</i>' }}</a></span>
+                    <span class="secondary-content left"><a href="{{ path('answer_remove', {'id': question.bestAnswer.id}) }}"><i class="material-icons tooltipped" data-position="top" data-tooltip="delete">delete_forever</i></a></span>
+                {% endif %}        </div>
+        <div class="card-content" style="padding:0">
+            <ul class="collection" style="margin:0; border:none">
+                <li class="collection-item avatar">
+                    <img src="{{ question.bestAnswer.user.pictureUrl }}" alt="" class="circle">
+                    <span class="title">{{ question.bestAnswer.content }}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="card-action light-green lighten-5">
+            le {{question.bestAnswer.createdAt|date("j F Y", "Europe/Paris")}} par <a href="{{ path('user_show', {'id': question.bestAnswer.user.id}) }}">{{question.bestAnswer.user.username}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{# other answers template #}
+
+{% for answer in question.answers %}
+    {% if answer is not same as(question.bestAnswer) and (answer.status == 'active')  %}
+    <div class="col s12 m7">
+        <div class="card horizontal">
+        <div class="card-stacked">
+            <div class="card-content" style="padding: 0.5em">
+                <span class="secondary-content"><i class="material-icons tooltipped" data-position="top" data-tooltip="Voter pour cette question">thumb_up</i></span>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and (app.user.role.code in ['ROLE_MODERATEUR', 'ROLE_ADMIN'])  %}
+                    <span class="secondary-content left"><a href="{{ path('answer_edit', {'id': answer.id}) }}"><i class="material-icons tooltipped" data-position="top" data-tooltip="edit">edit</i></a></span>
+                    <span class="secondary-content left"><a href="{{ path('answer_moderate', {'id': answer.id}) }}">{{ (answer.status == 'active') ? '<i class="material-icons tooltipped" data-position="top" data-tooltip="disable">report</i>' : '<i class="material-icons tooltipped" data-position="top" data-tooltip="enable">report_off</i>' }}</a></span>
+                    <span class="secondary-content left"><a href="{{ path('answer_remove', {'id': answer.id}) }}"><i class="material-icons tooltipped" data-position="top" data-tooltip="delete">delete_forever</i></a></span>
+                {% endif %}
+            </div>
+            <div class="card-content" style="padding:0">
+                <ul class="collection" style="margin:0; border:none">
+                    <li class="collection-item avatar">
+                        <img src="{{ answer.user.pictureUrl }}" alt="" class="circle">
+                        <span class="title">{{ answer.content }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-action  grey lighten-4">
+                le {{answer.createdAt|date("j F Y", "Europe/Paris")}} par <a href="{{ path('user_show', {'id': answer.user.id}) }}">{{answer.user.username}}</a>
+            </div>
+        </div>
+        </div>
+    </div>
+    {% elseif answer.status=='inactive' and is_granted('IS_AUTHENTICATED_REMEMBERED') and (app.user.role.code in ['ROLE_MODERATEUR', 'ROLE_ADMIN'])  %}
+
+    <div class="col s12 m7">
+        <div class="card horizontal">
+        <div class="card-stacked">
+            <div class="card-content red lighten-5 red-text" style="padding: 0.5em">
+                <p class="text-center">cette réponse a été désactivée</p>
+                    <span class="secondary-content"><a href="{{ path('answer_remove', {'id': answer.id}) }}"><i class="material-icons tooltipped" data-position="top" data-tooltip="delete">delete_forever</i></a></span>
+                    <span class="secondary-content"><a href="{{ path('answer_moderate', {'id': answer.id}) }}"><i class="material-icons tooltipped" data-position="top" data-tooltip="enable">report_off</i></a></span>
+                    
+            </div>
+            <div class="card-content" style="padding:0">
+                <ul class="collection" style="margin:0; border:none">
+                    <li class="collection-item avatar red lighten-5">
+                        <img src="{{ answer.user.pictureUrl }}" alt="" class="circle">
+                        <span class="title">{{ answer.content }}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-action red lighten-4">
+                le {{answer.createdAt|date("j F Y", "Europe/Paris")}} par <a href="{{ path('user_show', {'id': answer.user.id}) }}">{{answer.user.username}}</a>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    {% endif %}
+{% else %}
+    <li class="collection-item">Il n'y a pas encore de réponse !</li>
+{% endfor %}
+
+
+{# include answer form if connected #}
+
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        {{ include('answer/_form.html.twig') }}
+    {% endif %}
+
+    <a class="waves-effect waves-light btn-large" style="margin: 2em 0" href="{{ path('faq_index') }}">Retour à l'accueil</a>
+{% endblock %}

@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+#        # List the entity class name you want to manage
+        - App\Entity\Answer
+        - App\Entity\Question
+        - App\Entity\Role
+        - App\Entity\Tag
+        - App\Entity\User

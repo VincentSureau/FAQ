@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('/css/app.css') }}">
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        {% if is_granted('ROLE_MODERATEUR') %}
+            {{ include('__navbar_moderator.html.twig') }}
+        {% else %}
+            {{ include('__navbar.html.twig') }}
+        {% endif %}
+        <main class="container">
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer class="page-footer light-blue lighten-3 footer-copyright">
+            <div class="container">
+                Made with &hearts; by Vincent
+                <a class="grey-text text-lighten-4 right" href="{{ path('admin') }}"><i class="material-icons left">settings</i>Accès administrateur</a>
+            </div>
+        </footer>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="{{ asset('/javascript/app.js') }}"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

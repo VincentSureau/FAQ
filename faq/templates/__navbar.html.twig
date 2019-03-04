@@ -1,0 +1,26 @@
+<nav>
+  <div class="nav-wrapper light-blue darken-1">
+    <a href="{{ path('faq_index') }}" class="brand-logo">faq<span class="teal-text text-accent-2">Oclock</span></a>
+    <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    <ul class="right hide-on-med-and-down">
+      {% if app.user %}
+        <li><a href="{{ path('user_show', {'id' : app.user.id}) }}"><i class="material-icons left">account_box</i>My account</a></li>
+        <li><a href="{{ path('app_logout') }}"><i class="material-icons left">exit_to_app</i>Log Out</a></li>
+      {% else %}
+        <li><a href="{{ path('app_login') }}"><i class="material-icons left">person</i>Log In</a></li>
+        <li><a href="{{ path('user_new') }}"><i class="material-icons left">person_add</i>Sign Up</a></li>
+      {% endif %}
+    </ul>
+
+    <ul class="sidenav" id="mobile-sidebar">
+      {% if app.user %}
+        <li><a href="{{ path('user_show', {'id' : app.user.id}) }}"><i class="material-icons left">account_box</i>My Account</a></li>
+        <li><a href="{{ path('app_logout') }}"><i class="material-icons left">exit_to_app</i>Log Out</a></li>
+      {% else %}
+        <li><a href="{{ path('app_login') }}"><i class="material-icons left">person</i>Log In</a></li>
+        <li><a href="{{ path('user_new') }}"><i class="material-icons left">person_add</i>Sign Up</a></li>
+      {% endif %}
+    </ul>
+          
+  </div>
+</nav>

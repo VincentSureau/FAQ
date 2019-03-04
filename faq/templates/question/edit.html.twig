@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Question{% endblock %}
+
+{% block body %}
+    <h1>Edit Question</h1>
+
+    {{ include('question/_form.html.twig', {'button_label': 'Update'}) }}
+
+    {{ include('question/_delete_form.html.twig') }}
+    
+    <a class="waves-effect waves-light btn-large left" style="margin: 2em 0" href="{{ path('faq_index') }}">Retour à l'accueil</a>
+
+{% endblock %}

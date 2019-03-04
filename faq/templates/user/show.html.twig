@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block body %}
+    <h1>Profil de {{ user.username }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Avatar</th>
+                <td><img class="materialboxed" width="150" src="{{ user.pictureUrl }}"></td>
+            </tr>
+
+            <tr>
+                <th>Username</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>{{ user.role.name }}</td>
+            </tr>
+            <tr>
+                <th>PictureUrl</th>
+                <td>{{ user.pictureUrl }}</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and ((app.user.role.code in ['ROLE_MODERATEUR', 'ROLE_ADMIN']) or (app.user.id == user.id)) %}
+    <a class="waves-effect waves-light btn-large" style="margin: 2em 0"  href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+    {% endif %}
+    <a class="waves-effect waves-light btn-large" style="margin: 2em 0" href="{{ path('faq_index') }}">Retour à l'accueil</a>
+    
+    <h3>Questions posées par l'utilisateur :</h3>
+
+    {% for question in user.questions %}
+        <div class="col s12 m6">
+            <div class="card">
+                <div class="card-content">
+                    {% for tag in question.tags %}
+                        <a href="{{ path('tag_show', {'id' : tag.id })}}"><span class="badge blue white-text">{{ tag.name }}</span></a>
+                    {% endfor %}
+                </div>
+                <div class="card-content" style="padding-top: 0.5em">
+                    <p><a href="{{ path("show_question", {'id' : question.id }) }}">{{ question.content }}</a></p>
+                </div>
+                <div class="card-action {{ cycle(['light-green', 'light-blue'], loop.index0) }} lighten-5">
+                le {{question.createdAt|date("j F Y", "Europe/Paris")}} par <a href="{{ path('user_show', {'id': question.user.id}) }}">{{question.user.username}}</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>L'utilisateur n'a pas encore publié de question</p>
+    {% endfor %}
+{% endblock %}

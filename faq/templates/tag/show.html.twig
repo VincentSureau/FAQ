@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tag{% endblock %}
+
+{% block body %}
+    <h4 class="blue-grey-text text-darken-2">Questions pour le tag : {{ tag.name }}</h4>
+
+    {% for question in tag.questions %}
+
+        <div class="col s12 m6">
+            <div class="card">
+                <div class="card-content">
+                    {% for tag in question.tags %}
+                        <a href="{{ path('tag_show', {'id' : tag.id })}}"><span class="badge blue white-text">{{ tag.name }}</span></a>
+                    {% endfor %}
+                </div>
+                <div class="card-content" style="padding-top: 0.5em">
+                    <p><a href="{{ path("show_question", {'id' : question.id }) }}">{{ question.content }}</a></p>
+                </div>
+                <div class="card-action {{ cycle(['light-green', 'light-blue'], loop.index0) }} lighten-5">
+                le {{question.createdAt|date("j F Y", "Europe/Paris")}} par <a href="{{ path('user_show', {'id': question.user.id}) }}">{{question.user.username}}</a>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <p>Il n'y a pas encore de question</p>
+    {% endfor %}
+
+        <a class="waves-effect waves-light btn-large" style="margin: 2em 0" href="{{ path('faq_index') }}">Retour à l'accueil</a>
+
+{% endblock %}

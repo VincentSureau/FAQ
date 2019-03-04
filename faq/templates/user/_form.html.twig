@@ -1,0 +1,6 @@
+{{ form_start(form) }}
+    Avatar
+    <img class="materialboxed" width="150" src="{{ user.pictureUrl|default('https://via.placeholder.com/150') }}">
+    {{ form_widget(form) }}
+    <button class="btn right">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

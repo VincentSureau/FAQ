@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Question Moderation{% endblock %}
+
+{% block body %}
+    <h1 class="blue-grey-text text-darken-2 text-center">Questions' moderation page</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Author</th>
+                <th>Content</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for question in questions %}
+            <tr>
+                <td><a href="{{ path('user_show', {'id' : question.user.id }) }}">{{question.user.username}}</a></td>
+                <td>{{ question.content }}</td>
+                <td>{{ question.status }}</td>
+                <td>{{ question.createdAt ? question.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('question_show', {'id': question.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="show">search</i></a>
+                    <a href="{{ path('question_edit', {'id': question.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="edit">edit</i></a>
+                    <a href="{{ path('question_moderate', {'id': question.id}) }}">{{ (question.status == 'active') ? '<i class="material-icons tooltipped" data-position="right" data-tooltip="disable">report</i>' : '<i class="material-icons tooltipped" data-position="right" data-tooltip="enable">report_off</i>' }}</a>
+                    <a href="{{ path('question_remove', {'id': question.id}) }}"><i class="material-icons tooltipped" data-position="right" data-tooltip="delete">delete_forever</i></a>
+                
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

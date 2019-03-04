@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
+    <h1 class="blue-grey-text text-darken-2 text-center">Bienvenue sur faq<span class="teal-text text-accent-2">Oclock</h1>
+    <h4 class="blue-grey-text text-darken-2">Tags</h4>
+    <div class="col s12 m6">
+        <div class="card">
+            <div class="card-action text-center">
+                {% for tag in tags %}
+                    <a class="waves-effect waves-light btn-small light-blue darken-1 tag-button" href="{{ path('tag_show', {'id' : tag.id })}}">{{ tag.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <h4 class="blue-grey-text text-darken-2">Les dernières questions</h4>
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <a class="waves-effect waves-light btn-large" href="{{ path('question_new') }}"><i class="material-icons left">add_circle</i>Ask Question</a>
+    {% endif %}
+
+    {% for question in questions %}
+
+        <div class="col s12 m6">
+            <div class="card">
+                <div class="card-content">
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and (app.user.role.code in ['ROLE_MODERATEUR', 'ROLE_ADMIN'])  %}
+                        <span class="secondary-content left"><a href="{{ path('question_edit', {'id': question.id}) }}"><i class="material-icons tooltipped" data-position="top" data-tooltip="edit">edit</i></a></span>
+                        <span class="secondary-content left"><a href="{{ path('question_moderate', {'id': question.id}) }}">{{ (question.status == 'active') ? '<i class="material-icons tooltipped" data-position="top" data-tooltip="disable">report</i>' : '<i class="material-icons tooltipped" data-position="top" data-tooltip="enable">report_off</i>' }}</a></span>
+                        <span class="secondary-content left"><a href="{{ path('question_remove', {'id': question.id}) }}"><i class="material-icons tooltipped" data-position="top" data-tooltip="delete">delete_forever</i></a></span>
+                    {% endif %}
+                    {% for tag in question.tags %}
+                        <a href="{{ path('tag_show', {'id' : tag.id })}}"><span class="badge blue white-text">{{ tag.name }}</span></a>
+                    {% endfor %}
+                </div>
+                <div class="card-content" style="padding-top: 0.5em">
+                    <p><a href="{{ path("show_question", {'id' : question.id }) }}">{{ question.content }}</a></p>
+                </div>
+                <div class="card-action {{ cycle(['light-green', 'light-blue'], loop.index0) }} lighten-5">
+                le {{question.createdAt|date("j F Y", "Europe/Paris")}} par <a href="{{ path('user_show', {'id': question.user.id}) }}">{{question.user.username}}</a>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <p>Il n'y a pas encore de question</p>
+    {% endfor %}
+
+        <ul class="pagination text-center">
+            {{ knp_pagination_render(questions) }}
+        </ul>
+
+{% endblock %}

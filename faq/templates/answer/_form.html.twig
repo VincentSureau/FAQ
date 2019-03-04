@@ -1,0 +1,7 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    {% if question is defined %}
+        <input type="hidden" value="{{ question.id }}">
+    {% endif %}
+    <button class="btn right">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
